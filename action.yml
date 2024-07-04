@@ -41,15 +41,17 @@ runs:
       shell: bash
       id: GITHUB_CONTEXT_OUTPUT
       run: |
-        echo "$GITHUB_CONTEXT"
-        echo "$GITHUB_REF"
-        echo "$GITHUB_REF_NAME"
-        echo "$GITHUB_HEAD_REF"
-        echo "$GITHUB_BASE_REF"
-        echo "${github.ref}"
-        echo "${github.ref_name}"
-        echo "${github.head_ref}"
-        echo "${github.base_ref}"
+        echo "GITHUB_CONTEXT $GITHUB_CONTEXT"
+        echo "GITHUB_REF $GITHUB_REF"
+        echo "GITHUB_REF_NAME $GITHUB_REF_NAME"
+        echo "GITHUB_HEAD_REF $GITHUB_HEAD_REF"
+        echo "GITHUB_BASE_REF $GITHUB_BASE_REF"
+        echo "github.ref ${github.ref}"
+        echo "github.ref_name ${github.ref_name}"
+        echo "github.head_ref ${github.head_ref}"
+        echo "github.base_ref ${github.base_ref}"
+        echo "inputs.wpengine_development_env ${inputs.wpengine_development_env}"
+        echo "INPUT_SOURCE_DEVELOPMENT_BRANCH $INPUT_SOURCE_DEVELOPMENT_BRANCH"
     - name: INPUTS_CONTEXT
       shell: bash
       id: INPUTS_CONTEXT_OUTPUT
