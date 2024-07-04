@@ -40,7 +40,16 @@ runs:
     - name: GITHUB_CONTEXT
       shell: bash
       id: GITHUB_CONTEXT_OUTPUT
-      run: echo "$GITHUB_CONTEXT"
+      run: |
+        echo "$GITHUB_CONTEXT"
+        echo "$GITHUB_REF"
+        echo "$GITHUB_REF_NAME"
+        echo "$GITHUB_HEAD_REF"
+        echo "$GITHUB_BASE_REF"
+        echo "${github.ref}"
+        echo "${github.ref_name}"
+        echo "${github.head_ref}"
+        echo "${github.base_ref}"
     - name: INPUTS_CONTEXT
       shell: bash
       id: INPUTS_CONTEXT_OUTPUT
