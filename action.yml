@@ -58,9 +58,9 @@ runs:
           echo "yes 2"
         fi
 
-        echo "wpengine_deploy_env=inputs.source_development_branch"
+        echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
         echo "3 ${wpengine_deploy_env}"
-        echo "wpengine_deploy_env=${{ inputs.source_development_branch }}"
+        echo "wpengine_deploy_env=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
         echo "4 ${wpengine_deploy_env}"
     - name: INPUTS_CONTEXT
       shell: bash
