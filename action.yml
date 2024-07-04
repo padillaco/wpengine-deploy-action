@@ -50,13 +50,18 @@ runs:
         echo "INPUTS_SOURCE_DEVELOPMENT_BRANCH $INPUTS_SOURCE_DEVELOPMENT_BRANCH"
         echo "SOURCE_DEVELOPMENT_BRANCH $SOURCE_DEVELOPMENT_BRANCH"
 
-        if [[ $GITHUB_REF_NAME == "${{ inputs.wpengine_development_env }}" ]]; then
+        if [[ $GITHUB_REF_NAME == "${{ inputs.source_development_branch }}" ]]; then
           echo "yes 1"
         fi
 
-        if [[ $GITHUB_REF_NAME == inputs.wpengine_development_env ]]; then
+        if [[ $GITHUB_REF_NAME == inputs.source_development_branch ]]; then
           echo "yes 2"
         fi
+
+        echo "wpengine_deploy_env=inputs.source_development_branch"
+        echo "3 ${wpengine_deploy_env}"
+        echo "wpengine_deploy_env=${{ inputs.source_development_branch }}"
+        echo "4 ${wpengine_deploy_env}"
     - name: INPUTS_CONTEXT
       shell: bash
       id: INPUTS_CONTEXT_OUTPUT
@@ -65,8 +70,8 @@ runs:
       shell: bash
       id: wpengine-deploy-env
       run: |
-        if [[ inputs.wpengine_development_env != "" && $GITHUB_REF_NAME == inputs.wpengine_development_env ]]; then
-          echo "wpengine_deploy_env=$INPUT_WPENGINE_DEVELOPMENT_ENV" >> $GITHUB_OUTPUT
+        if [[ inputs.source_development_branch != "" && $GITHUB_REF_NAME == inputs.source_development_branch ]]; then
+          echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
         elif [[ $INPUT_SOURCE_STAGING_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_STAGING_BRANCH ]]; then
           echo "wpengine_deploy_env=$INPUT_WPENGINE_STAGING_ENV" >> $GITHUB_OUTPUT
         elif [[ $INPUT_SOURCE_PRODUCTION_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_PRODUCTION_BRANCH ]]; then
