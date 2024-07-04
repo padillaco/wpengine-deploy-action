@@ -61,37 +61,8 @@ runs:
         echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
         echo "3 ${{ wpengine_deploy_env }}"
         echo "3 ${{ input.wpengine_deploy_env }}"
-        
+
         echo "wpengine_deploy_env=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
         echo "4 ${{ wpengine_deploy_env }}"
         echo "4 ${{ input.wpengine_deploy_env }}"
-    - name: INPUTS_CONTEXT
-      shell: bash
-      id: INPUTS_CONTEXT_OUTPUT
-      run: echo "$INPUTS_CONTEXT"
-    - name: Set Output Variables - WP Engine Environment
-      shell: bash
-      id: wpengine-deploy-env
-      run: |
-        if [[ inputs.source_development_branch != "" && $GITHUB_REF_NAME == inputs.source_development_branch ]]; then
-          echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
-        elif [[ $INPUT_SOURCE_STAGING_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_STAGING_BRANCH ]]; then
-          echo "wpengine_deploy_env=$INPUT_WPENGINE_STAGING_ENV" >> $GITHUB_OUTPUT
-        elif [[ $INPUT_SOURCE_PRODUCTION_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_PRODUCTION_BRANCH ]]; then
-          echo "wpengine_deploy_env=$INPUT_WPENGINE_PRODUCTION_ENV" >> $GITHUB_OUTPUT
-        else
-          echo "No WP Engine environment was set for deployment."
-          exit 1
-        fi
-    - name: Install rsync
-      run: sudo apt-get install -y rsync
-      shell: bash
-    - name: Deploy to Remote Repository
-      uses: padillaco/action-deploy-to-remote-repository@main
-      with:
-        base_directory: ${{ inputs.base_directory }}
-        exclude_list: ${{ inputs.exclude_list }}
-        destination_directory: '~/sites/${{ inputs.wpengine_deploy_env }}/'
-        remote_repo: 'ssh://git@git.wpengine.com:${{ inputs.wpengine_deploy_env }}.git'
-        remote_branch: 'master'
         ssh_private_key: ${{ inputs.ssh_private_key }}
