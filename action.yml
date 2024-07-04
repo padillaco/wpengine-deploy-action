@@ -61,8 +61,7 @@ runs:
         echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
         echo "3 ${{ wpengine_deploy_env }}"
         echo "3 ${{ input.wpengine_deploy_env }}"
-
+        
         echo "wpengine_deploy_env=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
         echo "4 ${{ wpengine_deploy_env }}"
         echo "4 ${{ input.wpengine_deploy_env }}"
-        ssh_private_key: ${{ inputs.ssh_private_key }}
