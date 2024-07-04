@@ -37,13 +37,19 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - name: GITHUB_CONTEXT
+      shell: bash
+      id: GITHUB_CONTEXT_OUTPUT
+      run: echo "$GITHUB_CONTEXT"
+    - name: INPUTS_CONTEXT
+      shell: bash
+      id: INPUTS_CONTEXT_OUTPUT
+      run: echo "$INPUTS_CONTEXT"
     - name: Set Output Variables - WP Engine Environment
       shell: bash
       id: wpengine-deploy-env
       run: |
-        echo "$GITHUB_CONTEXT"
-        echo "$INPUTS_CONTEXT"
-        if [[ inputs.wpengine_development_env != "" && $GITHUB_BASE_REF == inputs.wpengine_development_env ]]; then
+        if [[ inputs.wpengine_development_env != "" && github.ref_name == inputs.wpengine_development_env ]]; then
           echo "wpengine_deploy_env=$INPUT_WPENGINE_DEVELOPMENT_ENV" >> $GITHUB_OUTPUT
         elif [[ $INPUT_SOURCE_STAGING_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_STAGING_BRANCH ]]; then
           echo "wpengine_deploy_env=$INPUT_WPENGINE_STAGING_ENV" >> $GITHUB_OUTPUT
