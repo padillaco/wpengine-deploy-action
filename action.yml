@@ -37,9 +37,9 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: GITHUB_CONTEXT
+    - name: Output Vars
       shell: bash
-      id: GITHUB_CONTEXT_OUTPUT
+      id: output-vars
       run: |
         echo "GITHUB_CONTEXT $GITHUB_CONTEXT"
         echo "GITHUB_REF $GITHUB_REF"
@@ -59,10 +59,10 @@ runs:
         fi
 
         echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
-        echo "3 ${{ inputs.wpengine_deploy_env }}"
+        echo "3 ${{ steps.output-vars.outputs.wpengine_deploy_env }}"
         
         echo "wpengine_deploy_env=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
-        echo "4 ${{ inputs.wpengine_deploy_env }}"
+        echo "4 ${{ steps.output-vars.outputs.wpengine_deploy_env }}"
     - name: INPUTS_CONTEXT
       shell: bash
       id: INPUTS_CONTEXT_OUTPUT
