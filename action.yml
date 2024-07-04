@@ -51,11 +51,11 @@ runs:
         echo "SOURCE_DEVELOPMENT_BRANCH $SOURCE_DEVELOPMENT_BRANCH"
 
         if [[ $GITHUB_REF_NAME == "${{ inputs.wpengine_development_env }}" ]]; then
-          echo "yes"
+          echo "yes 1"
         fi
 
         if [[ $GITHUB_REF_NAME == inputs.wpengine_development_env ]]; then
-          echo "yes"
+          echo "yes 2"
         fi
     - name: INPUTS_CONTEXT
       shell: bash
