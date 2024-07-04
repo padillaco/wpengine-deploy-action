@@ -58,11 +58,14 @@ runs:
           echo "yes 2"
         fi
 
-        echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
-        echo "3 ${{ steps.output-vars.outputs.wpengine_deploy_env }}"
-        
-        echo "wpengine_deploy_env=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
-        echo "4 ${{ steps.output-vars.outputs.wpengine_deploy_env }}"
+        echo "wpengine_deploy_env_one=inputs.source_development_branch" >> $GITHUB_OUTPUT
+        echo "wpengine_deploy_env_two=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
+    - name: Output Vars Two
+      shell: bash
+      id: output-vars-two
+      run: |
+        echo "3 ${{ steps.output-vars.outputs.wpengine_deploy_env_one }}"
+        echo "4 ${{ steps.output-vars.outputs.wpengine_deploy_env_two }}"
     - name: INPUTS_CONTEXT
       shell: bash
       id: INPUTS_CONTEXT_OUTPUT
