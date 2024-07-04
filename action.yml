@@ -41,7 +41,9 @@ runs:
       shell: bash
       id: wpengine-deploy-env
       run: |
-        if [[ $INPUT_WPENGINE_DEVELOPMENT_ENV != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_DEVELOPMENT_BRANCH ]]; then
+        echo "$GITHUB_CONTEXT"
+        echo "$INPUTS_CONTEXT"
+        if [[ inputs.wpengine_development_env != "" && $GITHUB_BASE_REF == inputs.wpengine_development_env ]]; then
           echo "wpengine_deploy_env=$INPUT_WPENGINE_DEVELOPMENT_ENV" >> $GITHUB_OUTPUT
         elif [[ $INPUT_SOURCE_STAGING_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_STAGING_BRANCH ]]; then
           echo "wpengine_deploy_env=$INPUT_WPENGINE_STAGING_ENV" >> $GITHUB_OUTPUT
