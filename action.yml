@@ -37,49 +37,16 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Output Vars
-      shell: bash
-      id: output-vars
-      run: |
-        echo "GITHUB_CONTEXT $GITHUB_CONTEXT"
-        echo "GITHUB_REF $GITHUB_REF"
-        echo "GITHUB_REF_NAME $GITHUB_REF_NAME"
-        echo "GITHUB_HEAD_REF $GITHUB_HEAD_REF"
-        echo "GITHUB_BASE_REF $GITHUB_BASE_REF"
-        echo "inputs.wpengine_development_env ${{ inputs.wpengine_development_env }}"
-        echo "INPUTS_SOURCE_DEVELOPMENT_BRANCH $INPUTS_SOURCE_DEVELOPMENT_BRANCH"
-        echo "SOURCE_DEVELOPMENT_BRANCH $SOURCE_DEVELOPMENT_BRANCH"
-
-        if [[ $GITHUB_REF_NAME == "${{ inputs.source_development_branch }}" ]]; then
-          echo "yes 1"
-        fi
-
-        if [[ $GITHUB_REF_NAME == inputs.source_development_branch ]]; then
-          echo "yes 2"
-        fi
-
-        echo "wpengine_deploy_env_one=inputs.source_development_branch" >> $GITHUB_OUTPUT
-        echo "wpengine_deploy_env_two=${{ inputs.source_development_branch }}" >> $GITHUB_OUTPUT
-    - name: Output Vars Two
-      shell: bash
-      id: output-vars-two
-      run: |
-        echo "3 ${{ steps.output-vars.outputs.wpengine_deploy_env_one }}"
-        echo "4 ${{ steps.output-vars.outputs.wpengine_deploy_env_two }}"
-    - name: INPUTS_CONTEXT
-      shell: bash
-      id: INPUTS_CONTEXT_OUTPUT
-      run: echo "$INPUTS_CONTEXT"
-    - name: Set Output Variables - WP Engine Environment
+    - name: Set WP Engine Deploy Environment
       shell: bash
       id: wpengine-deploy-env
       run: |
-        if [[ inputs.source_development_branch != "" && $GITHUB_REF_NAME == inputs.source_development_branch ]]; then
-          echo "wpengine_deploy_env=inputs.source_development_branch" >> $GITHUB_OUTPUT
-        elif [[ $INPUT_SOURCE_STAGING_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_STAGING_BRANCH ]]; then
-          echo "wpengine_deploy_env=$INPUT_WPENGINE_STAGING_ENV" >> $GITHUB_OUTPUT
-        elif [[ $INPUT_SOURCE_PRODUCTION_BRANCH != "" && $GITHUB_BASE_REF == $INPUT_SOURCE_PRODUCTION_BRANCH ]]; then
-          echo "wpengine_deploy_env=$INPUT_WPENGINE_PRODUCTION_ENV" >> $GITHUB_OUTPUT
+        if [[ $GITHUB_REF_NAME == "${{ inputs.source_development_branch }}" && "${{ inputs.wpengine_development_env }}" != "" ]]; then
+          echo "wpengine_deploy_env=${{ inputs.wpengine_development_env }}" >> $GITHUB_OUTPUT
+        elif [[ $GITHUB_REF_NAME == "${{ inputs.source_staging_branch }}" && "${{ inputs.wpengine_staging_env }}" != "" ]]; then
+          echo "wpengine_deploy_env=${{ inputs.wpengine_staging_env }}" >> $GITHUB_OUTPUT
+        elif [[ $GITHUB_REF_NAME == "${{ inputs.source_production_branch }}" && "${{ inputs.wpengine_production_env }}" != "" ]]; then
+          echo "wpengine_deploy_env=${{ inputs.wpengine_production_env }}" >> $GITHUB_OUTPUT
         else
           echo "No WP Engine environment was set for deployment."
           exit 1
@@ -87,3 +54,12 @@ runs:
     - name: Install rsync
       run: sudo apt-get install -y rsync
       shell: bash
+    - name: Deploy to Remote Repository
+      uses: padillaco/action-deploy-to-remote-repository@main
+      with:
+        base_directory: ${{ inputs.base_directory }}
+        exclude_list: ${{ inputs.exclude_list }}
+        destination_directory: '~/sites/${{ steps.wpengine-deploy-env.outputs.wpengine_deploy_env }}/'
+        remote_repo: 'ssh://git@git.wpengine.com:${{ steps.wpengine-deploy-env.outputs.wpengine_deploy_env }}.git'
+        remote_branch: 'master'
+        ssh_private_key: ${{ inputs.ssh_private_key }}
