@@ -65,5 +65,5 @@ runs:
         destination_directory: ${{ inputs.destination_directory }}
         exclude_list: ${{ inputs.exclude_list }}
         remote_repo: 'git@git.wpengine.com:${{ steps.wpengine-deploy-env.outputs.wpengine_deploy_env }}.git'
-        remote_branch: main
+        remote_branch: master
         ssh_private_key: ${{ inputs.ssh_private_key }}
