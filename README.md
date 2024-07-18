@@ -1,132 +1,60 @@
 # Deploy to WP Engine
 
-Uses [action-deploy-to-remote-repository](https://github.com/padillaco/action-deploy-to-remote-repository) and Pantheon [terminus](https://docs.pantheon.io/terminus) to deploy files/folders from a local GitHub action repository to a Pantheon environment.
+Uses the GitHub action located in [this repo](https://github.com/padillaco/action-deploy-to-remote-repository) to deploy code from any GitHub repository to a WP Engine environment.
 
-_Notes_:
+## Implementation
 
-- This action depends upon the upstream action [action-deploy-to-remote-repository](https://github.com/padillaco/action-deploy-to-remote-repository) and it's associated requirements (eg. [ssh_key](https://github.com/padillaco/action-deploy-to-remote-repository#ssh_key).
-- The `develop` branch is deployed to the Pantheon `dev` environment (via a git commit to Pantheon's `master` branch), and all other branch names are deployed to a Pantheon multidev environment of the same name (unless overridden with [pantheon_env_name](#pantheon_env_name)).
+### 1. Copy the Example Workflow File
 
-## Usage
+Copy the [.github](/example/.github/) from the example directory to the root of the repository. This folder contains the [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file where actions related to the WP Engine deployment can be added/removed.
 
-Example deploy to a remote repository:
+### 2. Actions
 
-```yml
-name: Deploy to WP Engine
+The [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file comes with 3 actions:
 
-on:
-  push:
-    branches:
-     - develop
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
-      - staging
+1. Setup Node: Downloads and caches Node.js and adds it to the PATH
+2. Install JS Dependencies and Build Theme Assets
+3. Deploy to WP Engine
 
-jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
-    if: github.base_ref == 'develop' || (github.event.pull_request.merged && ((github.head_ref == 'develop' && github.base_ref == 'staging') || (github.head_ref == 'staging' && github.base_ref == 'main')))
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build theme assets
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: 'wp-content/themes/{theme-name}'
-      - name: Install JavaScript dependencies and build theme assets
-        run: |
-          cd wp-content/themes/{theme-name}
-          npm i -ci
-          npm run build
-          rm -rf node_modules/
-      - name: Deploy to WP Engine
-        uses: padillaco/wpengine-deploy-action@main
-        with:
-          # Optional. Only specify if the development environment exists.
-          wpengine_development_env: '{development-env-name}'
-          # Optional. Only specify if the staging environment exists.
-          wpengine_staging_env: '{staging-env-name}'
-          wpengine_production_env: '{production-env-name}'
-          ssh_key: ${{ secrets.WPENGINE_SSH_PRIVATE_KEY }}
-          base_directory: '.'
-          destination_directory: '.'
-          exclude_list: '.git, .github, .gitmodules, node_modules, .ddev'
-```
+_Note: Actions 1 and 2 are optional, and can be removed if the theme does not require assets to be built before a deployment._
 
-## Inputs
+These actions are triggered when pushing to a specific branch or when a pull request is closed and merged into a specific branch. If necessary, you can modify the branch name list in the workflow file for these triggers.
 
-> Specify using `with` keyword. See all upstream inputs for [action-deploy-to-remote-repository](https://github.com/padillaco/action-deploy-to-remote-repository).
+### 3. Variables and Configuration
 
-### `base_directory`
+1. Setup Node Action
+    - Replace `[theme-folder]` with the name of the theme folder.
 
-- Specify the base directory to sync from.
-- Accepts a string.
-- Defaults to the root of the repository (`.`). **NOTE** You likely want a
-  trailing slash if you're syncing a subdirectory. (eg. `wp-content/`)
-- Inherited from `action-deploy-to-remote-repository`.
+2. Install JS Dependencies and Build Theme Assets Action
+    - Replace `[theme-folder]` with the name of the theme folder.
 
-### `destination_directory`
+3. Deploy to WP Engine Action
+    - Set the path to the code that will be deployed using the `base_directory` variable. The default value is `.`, or the root of the repository.
+    - Set the path to the destination directory on the WP Engine environment where the code will be deployed to using the `destination_directory` variable. The default value is `.`, or the WordPress install root of the WP Engine environment.
+    - If needed, modify the list of excluded files that should be deployed using the `exclude_list` variable. The default value is: `.git, .github, .gitmodules, node_modules, .ddev`
+    - To enable deployments to a WP Engine environment, you will need to add the branch name from the repository where to code will be deployed from, and the name of the WP Engine environment. For example, to enable deployments to the development environment, replace `[development-branch]` with the branch name and `[development-environment]` with the environment name. Follow the same approach for `staging` and `production`. If deployments for the either environment is not supported, then remove the related variables to prevent deployments.
 
-- Specify the destination directory to sync to.
-- Accepts a string.
-- Defaults to the root of the remote repository (`.`).
-- Inherited from `action-deploy-to-remote-repository`.
+### 4. Generate an SSH Key Pair
 
-### `exclude_list`
+WP Engine requires that an SSH public key be added to environment to enable GitPush. See [WP Engine: Git Version Control System](https://wpengine.com/support/git/) for more details.
 
-- Specify a comma-separated list of files and directories to exclude from sync.
-- Accepts a string. (e.g. `.git, .gitmodules`)
-- Defaults to `.git, .gitmodules, .pantheon`.
-- Inherited from `action-deploy-to-remote-repository`.
+1. Open the terminal and run:
+    ```bash
+    ssh-keygen -t ed25519 -C "wpengine-deploy" -f ~/.ssh/wpengine-deploy
+    ```
+    _You can replace `~/.ssh/wpengine-deploy` with any temporary file name and path since the key pair will be deleted after use._
 
-### `ssh_key`
+2. Copy the private key by running:
+    ```bash
+    cat ~/.ssh/wpengine-deploy | pbcopy
+    ```
 
-- SSH key to use for remote repository authentication.
-- Accepts a string (private key).
-- Required.
-- Inherited from `action-deploy-to-remote-repository`.
+    Go to the **Settings → Secrets and variables → Actions** page of the repository and add a new repository secret named `WPENGINE_SSH_PRIVATE_KEY` then enter the contents of the private key as the value.
 
-### `pantheon_site`
+3. Copy the public key by running:
+    ```bash
+    cat ~/.ssh/wpengine-deploy.pub | pbcopy
+    ```
 
-- Specify the name of the Pantheon site to deploy to.
-- Accepts a string.
-- Required.
+    From the WP Engine dashboard, go to the GitPush section of the related environment to add the public key. Enter `[repository-slug]-github-repo` as the name of the key (be sure to replace [repository-slug]), then enter the contents of the public key.
 
-### `pantheon_site_id`
-
-- Specify the ID of the Pantheon site to deploy to.
-- Accepts a string.
-- Required.
-
-### `pantheon_machine_token`
-
-- Specify the Pantheon machine token to use.
-- Accepts a string.
-- Required.
-
-### `terminus_version`
-
-- Specify the version of [terminus](https://docs.pantheon.io/terminus) to use.
-- Accepts a string.
-- Defaults to `'3.3.0'`.
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed
-recently.
-
-## Credits
-
-This project was created by [Alley Interactive](https://github.com/alleyinteractive).
-
-- [Ben Bolton](https://github.com/benpbolton)
-- [All Contributors](https://github.com/alleyinteractive/action-deploy-to-pantheon/graphs/contributors)
-
-## License
-
-The GNU General Public License (GPL) license. Please see [License File](LICENSE)
-for more information.

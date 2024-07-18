@@ -1,0 +1,63 @@
+name: Build and Deploy to WP Engine
+
+on:
+  push:
+    branches:
+      - develop
+      - staging
+      - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
+      - staging
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'develop' || github.ref_name == 'staging' || github.ref_name == 'main' || (github.event.pull_request.merged && (github.base_ref == 'develop' || (github.head_ref == 'develop' && github.base_ref == 'staging') || (github.head_ref == 'staging' && github.base_ref == 'main')))
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: wp-content/themes/[theme-folder]
+      
+      - name: Install JS Dependencies and Build Theme Assets
+        run: |
+          cd wp-content/themes/[theme-folder]
+          npm i -ci
+          npm run build
+          rm -rf node_modules/
+      
+      - name: Deploy to WP Engine
+        uses: padillaco/wpengine-deploy-action@main
+        with:
+          # Base directory for rsync
+          base_directory: .
+
+          # Destination directory for rsync in remote repository
+          destination_directory: .
+
+          # Comma-separated list of files and directories to exclude from sync
+          exclude_list: .git, .github, .gitmodules, node_modules, .ddev
+
+          # Optional source development branch and WP Engine environment name
+          source_development_branch: [development-branch]
+          wpengine_development_env: [development-environment]
+
+          # Optional source staging branch and WP Engine environment name
+          source_staging_branch: [staging-branch]
+          wpengine_staging_env: [staging-environment]
+
+          # Required source production branch and WP Engine environment name
+          source_production_branch: [production-branch]
+          wpengine_production_env: [production-environment]
+
+          # SSH private key to use for remote repository authentication
+          ssh_private_key: ${{ secrets.WPENGINE_SSH_PRIVATE_KEY }}

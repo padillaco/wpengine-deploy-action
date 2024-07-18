@@ -47,17 +47,18 @@ runs:
       run: |
         if [[ ($GITHUB_REF_NAME == "${{ inputs.source_development_branch }}" || $GITHUB_BASE_REF == "${{ inputs.source_development_branch }}") && "${{ inputs.wpengine_development_env }}" != "" ]]; then
           echo "wpengine_deploy_env=${{ inputs.wpengine_development_env }}" >> $GITHUB_OUTPUT
+        
         elif [[ ($GITHUB_REF_NAME == "${{ inputs.source_staging_branch }}" || $GITHUB_BASE_REF == "${{ inputs.source_staging_branch }}") && "${{ inputs.wpengine_staging_env }}" != "" ]]; then
           echo "wpengine_deploy_env=${{ inputs.wpengine_staging_env }}" >> $GITHUB_OUTPUT
+        
         elif [[ ($GITHUB_REF_NAME == "${{ inputs.source_production_branch }}" || $GITHUB_BASE_REF == "${{ inputs.source_production_branch }}") && "${{ inputs.wpengine_production_env }}" != "" ]]; then
           echo "wpengine_deploy_env=${{ inputs.wpengine_production_env }}" >> $GITHUB_OUTPUT
+        
         else
           echo "No WP Engine environment was set for deployment."
           exit 1
         fi
-    - name: Install rsync
-      run: sudo apt-get install -y rsync
-      shell: bash
+
     - name: Deploy to Remote Repository
       uses: padillaco/action-deploy-to-remote-repository@main
       with:
