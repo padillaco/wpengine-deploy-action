@@ -58,3 +58,4 @@ WP Engine requires that an SSH public key be added to environment to enable GitP
 
     From the WP Engine dashboard, go to the GitPush section of the related environment to add the public key. Enter `[repository-slug]-github-repo` as the name of the key (be sure to replace [repository-slug]), then enter the contents of the public key.
 
+#### Deployments should now be triggered when pushing to one of the branches specified, or when a pull request is closed and merge into one of the branches.
