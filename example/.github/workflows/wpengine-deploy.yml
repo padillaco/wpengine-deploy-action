@@ -1,6 +1,6 @@
 name: Build and Deploy to WP Engine
 
-#============================== WORKFLOW CONFIG ============================
+#============================= WORKFLOW CONFIG =============================
 
 on:
   push:
@@ -33,7 +33,7 @@ env:
   # The theme folder that requires assets to be built before deploying files
   WP_THEME_FOLDER: theme-folder
 
-#============================ END WORKFLOW CONFIG ==========================
+#=========================== END WORKFLOW CONFIG ===========================
 
 jobs:
   build_and_deploy:
