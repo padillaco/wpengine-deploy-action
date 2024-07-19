@@ -10,15 +10,15 @@ Copy the [.github](/example/.github/) from the example directory to the root of 
 
 ### 2. Variables and Configuration
 
-1. In the **Workflow Environment Variables** section, add the source branch and WP Engine environment name for development, staging, and production. You can comment out the related variables for each environment that does not support deployments.
+1. In the **Workflow Environment Variables** section, add the source branch and WP Engine environment name for development, staging, and production. You delete the related variables for each environment that does not support deployments.
 
-2. If the WordPress theme requires assets to be built before each deployment, assign the theme folder name to the `WP_THEME_FOLDER` variable. If no assets need to be built, you can comment out this variable.
+2. If the WordPress theme requires assets to be built before each deployment, assign the theme folder name to the `WP_THEME_FOLDER` variable. You can delete this variable if no assets need to be built.
 
 3. Configuring the **Deploy to WP Engine** Action
     - Set the path to the code that will be deployed using the `base_directory` variable. The default value is `.`, or the root of the repository.
     - Set the path to the destination directory on the WP Engine environment where the code will be deployed to using the `destination_directory` variable. The default value is `.`, or the WordPress install root of the WP Engine environment.
     - If needed, modify the list of excluded files that should be deployed using the `exclude_list` variable. The default value is: `.git, .github, .gitmodules, node_modules, .ddev`
-    - You can comment out the related variables for each environment that does not support deployments.
+    - You can delete the related variables for each environment that does not support deployments.
 
 ### 3. Actions
 
