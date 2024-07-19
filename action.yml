@@ -28,7 +28,7 @@ inputs:
     required: false
   source_production_branch:
     description: 'The production branch name in the source repository'
-    required: true
+    required: false
   wpengine_development_env:
     description: 'The WP Engine development evironment name'
     required: false
@@ -37,7 +37,7 @@ inputs:
     required: false
   wpengine_production_env:
     description: 'The WP Engine production evironment name'
-    required: true
+    required: false
 runs:
   using: 'composite'
   steps:
