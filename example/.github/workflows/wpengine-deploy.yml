@@ -1,44 +1,23 @@
 name: Build and Deploy to WP Engine
 
-#============================= WORKFLOW CONFIG =============================
-
 on:
   push:
     branches:
-      - develop
-      - staging
-      - main
+      - [development-branch]
+      - [staging-branch]
+      - [production-branch]
   pull_request:
     types:
       - closed
     branches:
-      - develop
-      - staging
-      - main
-
-# Workflow Environment Variables
-env:
-  # Development branch and environment variables
-  DEVELOPMENT_BRANCH: develop
-  WPENGINE_DEVELOPMENT_ENV: dev-env
-  
-  # Staging branch and environment variables
-  STAGING_BRANCH: staging
-  WPENGINE_STAGING_ENV: stg-env
-
-  # Production branch and environment variables
-  PRODUCTION_BRANCH: main
-  WPENGINE_PRODUCTION_ENV: prod-env
-
-  # The theme folder that requires assets to be built before deploying files
-  WP_THEME_FOLDER: theme-folder
-
-#=========================== END WORKFLOW CONFIG ===========================
+      - [development-branch]
+      - [staging-branch]
+      - [production-branch]
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    if: github.ref_name == env.DEVELOPMENT_BRANCH || github.ref_name == env.STAGING_BRANCH || github.ref_name == env.PRODUCTION_BRANCH || (github.event.pull_request.merged && (github.base_ref == env.DEVELOPMENT_BRANCH || github.base_ref == env.STAGING_BRANCH || github.base_ref == env.PRODUCTION_BRANCH))
+    if: github.ref_name == '[development-branch]' || github.ref_name == '[staging-branch]' || github.ref_name == '[production-branch]' || (github.event.pull_request.merged && (github.base_ref == '[development-branch]' || github.base_ref == '[staging-branch]' || github.base_ref == '[production-branch]'))
     steps:
       - uses: actions/checkout@v3
 
@@ -47,11 +26,11 @@ jobs:
         with:
           node-version: 18
           cache: npm
-          cache-dependency-path: "wp-content/themes/$WP_THEME_FOLDER"
+          cache-dependency-path: wp-content/themes/[theme-folder]
       
       - name: Install JS Dependencies and Build Theme Assets
         run: |
-          cd "wp-content/themes/$WP_THEME_FOLDER"
+          cd wp-content/themes/[theme-folder]
           npm i -ci
           npm run build
           rm -rf node_modules/
@@ -69,16 +48,16 @@ jobs:
           exclude_list: .git, .github, .gitmodules, node_modules, .ddev
 
           # Source development branch and WP Engine environment name
-          source_development_branch: ${{ env.DEVELOPMENT_BRANCH }}
-          wpengine_development_env: ${{ env.WPENGINE_DEVELOPMENT_ENV }}
+          source_development_branch: [development-branch]
+          wpengine_development_env: [development-environment]
 
           # Source staging branch and WP Engine environment name
-          source_staging_branch: ${{ env.STAGING_BRANCH }}
-          wpengine_staging_env: ${{ env.WPENGINE_STAGING_ENV }}
+          source_staging_branch: [staging-branch]
+          wpengine_staging_env: [staging-environment]
 
           # Source production branch and WP Engine environment name
-          source_production_branch: ${{ env.PRODUCTION_BRANCH }}
-          wpengine_production_env: ${{ env.WPENGINE_PRODUCTION_ENV }}
+          source_production_branch: [production-branch]
+          wpengine_production_env: [production-environment]
 
           # SSH private key to use for remote repository authentication
           ssh_private_key: ${{ secrets.WPENGINE_SSH_PRIVATE_KEY }}

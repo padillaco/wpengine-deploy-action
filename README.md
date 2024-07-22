@@ -8,19 +8,7 @@ This repository contains a GitHub action to setup code deployment from a GitHub 
 
 Copy the [.github](/example/.github/) from the example directory to the root of the repository. This folder contains the [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file where actions related to the WP Engine deployment can be added/removed.
 
-### 2. Variables and Configuration
-
-1. In the **Workflow Environment Variables** section, add the source branch and WP Engine environment name for development, staging, and production. You delete the related variables for each environment that does not support deployments.
-
-2. If the WordPress theme requires assets to be built before each deployment, assign the theme folder name to the `WP_THEME_FOLDER` variable. You can delete this variable if no assets need to be built.
-
-3. Configuring the **Deploy to WP Engine** Action
-    - Set the path to the code that will be deployed using the `base_directory` variable. The default value is `.`, or the root of the repository.
-    - Set the path to the destination directory on the WP Engine environment where the code will be deployed to using the `destination_directory` variable. The default value is `.`, or the WordPress install root of the WP Engine environment.
-    - If needed, modify the list of excluded files that should be deployed using the `exclude_list` variable. The default value is: `.git, .github, .gitmodules, node_modules, .ddev`
-    - You can delete the related variables for each environment that does not support deployments.
-
-### 3. Actions
+### 2. Actions
 
 The workflow file includes 3 actions:
 
@@ -31,6 +19,28 @@ The workflow file includes 3 actions:
 _Note: Actions 1 and 2 are optional, and can be removed if the WordPress theme does not require assets to be built before a deployment._
 
 These actions are triggered when pushing to a specific branch or when a pull request is closed and merged into a branch. If necessary, you can modify the branch name list in the workflow file for these triggers.
+
+### 3. Variables and Configuration
+
+1. The workflow file template contains the following placeholders that need to be replaced with their actual value:
+    - GitHub Repository Branches:
+        - `[development-branch]`
+        - `[staging-branch]`
+        - `[production-branch]`
+    - WP Engine Environments:
+        - `[development-environment]`
+        - `[staging-environment]`
+        - `[production-environment]`
+    - WordPress Theme Folder
+        - `[theme-folder]`
+
+2. If deployments shouldn't occur for the development, staging, or production environment, you can remove references to those environments and related branches from the workflow file.
+
+3. Configuring the **Deploy to WP Engine** Action
+    - Set the path to the code that will be deployed using the `base_directory` variable. The default value is `.`, or the root of the repository.
+    - Set the path to the destination directory on the WP Engine environment where the code will be deployed to using the `destination_directory` variable. The default value is `.`, or the WordPress install root of the WP Engine environment.
+    - If needed, modify the list of excluded files that should be deployed using the `exclude_list` variable. The default value is: `.git, .github, .gitmodules, node_modules, .ddev`
+    - You can delete the related variables for each environment that does not support deployments.
 
 ### 4. Generate an SSH Key Pair
 
