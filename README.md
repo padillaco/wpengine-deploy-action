@@ -24,15 +24,15 @@ These actions are triggered when pushing to a specific branch or when a pull req
 
 1. The workflow file template contains the following placeholders that need to be replaced with their actual value:
     - GitHub Repository Branches:
-        - `[development-branch]`
-        - `[staging-branch]`
-        - `[production-branch]`
+        - [development-branch]
+        - [staging-branch]
+        - [production-branch]
     - WP Engine Environments:
-        - `[development-environment]`
-        - `[staging-environment]`
-        - `[production-environment]`
+        - [development-environment]
+        - [staging-environment]
+        - [production-environment]
     - WordPress Theme Folder
-        - `[theme-folder]`
+        - [theme-folder]
 
 2. If deployments shouldn't occur for the development, staging, or production environment, you can remove references to those environments and related branches from the workflow file.
 
