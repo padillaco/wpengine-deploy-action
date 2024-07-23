@@ -34,7 +34,7 @@ These actions are triggered when pushing to a specific branch or when a pull req
     - WordPress Theme Folder
         - [theme-folder]
 
-2. If deployments shouldn't occur for the development, staging, or production environment, you can remove references to those environments and related branches from the workflow file.
+2. If deployments shouldn't occur for the development, staging, or production environment, you can remove references to the environment and related branch from the workflow file.
 
 3. Configuring the **Deploy to WP Engine** Action
     - Set the path to the code that will be deployed using the `base_directory` variable. The default value is `.`, or the root of the repository.
