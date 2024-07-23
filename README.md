@@ -18,7 +18,7 @@ The workflow file includes 3 actions:
 
 _Note: Actions 1 and 2 are optional, and can be removed if the WordPress theme does not require assets to be built before a deployment._
 
-These actions are triggered when pushing to a specific branch or when a pull request is closed and merged into a branch. If necessary, you can modify the branch name list in the workflow file for these triggers.
+These actions are triggered when pushing to a specific branch or when a pull request is closed and merged into a branch. Feel free to adjust the branch names for the **on push** or **on pull request** trigger located at the top of the workflow file.
 
 ### 3. Variables and Configuration
 
