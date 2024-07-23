@@ -4,13 +4,13 @@ This repository contains a GitHub action to setup code deployment from a GitHub 
 
 ## Implementation
 
-### 1. Copy the Example Workflow File
+### 1. Copy the Workflow File Template
 
-Copy the [.github](/example/.github/) from the example directory to the root of the repository. This folder contains the [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file where actions related to the WP Engine deployment can be added/removed.
+Copy this [.github](/example/.github/) folder to the root of the repository that is being setup for auto-deployments. If the **.github/workflows** folder already exists within the repository, then copy only the [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file to the workflows folder.
 
 ### 2. Actions
 
-The workflow file includes 3 actions:
+ The [wpengine-deploy.yml](/example/.github/workflows/wpengine-deploy.yml) workflow file includes 3 actions:
 
 1. Setup Node: Downloads and caches Node.js and adds it to the PATH
 2. Install JS Dependencies and Build Theme Assets
