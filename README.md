@@ -50,7 +50,9 @@ WP Engine requires that an SSH public key be added to environment to enable GitP
     ```bash
     ssh-keygen -t ed25519 -C "wpengine-deploy" -f ~/.ssh/wpengine-deploy
     ```
-    _You can replace `~/.ssh/wpengine-deploy` with any temporary file name and path since the key pair will be deleted after use._
+    _Note 1: Do not set a passphrase when generating the public/private key pair._
+
+    _Note 2: You can replace `~/.ssh/wpengine-deploy` with any temporary file name and path since the key pair will be deleted after use._
 
 2. Copy the private key by running:
     ```bash
