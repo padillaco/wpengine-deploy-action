@@ -6,18 +6,11 @@ on:
       - [development-branch]
       - [staging-branch]
       - [production-branch]
-  pull_request:
-    types:
-      - closed
-    branches:
-      - [development-branch]
-      - [staging-branch]
-      - [production-branch]
 
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
-    if: github.ref_name == '[development-branch]' || github.ref_name == '[staging-branch]' || github.ref_name == '[production-branch]' || (github.event.pull_request.merged && (github.base_ref == '[development-branch]' || github.base_ref == '[staging-branch]' || github.base_ref == '[production-branch]'))
+    if: contains(fromJSON('["[development-branch]", "[staging-branch]", "[production-branch]"]'), github.ref_name)
     steps:
       - uses: actions/checkout@v3
 
